@@ -1,0 +1,605 @@
+<html><head><base href="">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Andrew PARKER - CV Interactif</title>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+<style>
+    :root {
+        --bg-color: #1a1a2e;
+        --text-color: #4da8da;
+        --sidebar-bg: rgba(26, 26, 46, 0.9);
+        --sidebar-text: #4da8da;
+        --header-bg: rgba(26, 26, 46, 0.9);
+        --header-text: #16213e;
+        --section-bg: rgba(26, 26, 46, 0.8);
+        --skill-bg: #0f3460;
+        --skill-text: #4da8da;
+        --highlight-color: #4da8da;
+        --card-shadow: 0 0 20px rgba(77, 168, 218, 0.3);
+    }
+
+    body.light-mode {
+        --bg-color: #f0f0f0;
+        --text-color: #0f3460;
+        --sidebar-bg: rgba(240, 240, 240, 0.9);
+        --sidebar-text: #0f3460;
+        --header-bg: rgba(240, 240, 240, 0.9);
+        --header-text: #0f3460;
+        --section-bg: rgba(255, 255, 255, 0.8);
+        --skill-bg: #4da8da;
+        --skill-text: #fff;
+        --highlight-color: #0f3460;
+        --card-shadow: 0 0 20px rgba(15, 52, 96, 0.1);
+    }
+
+    body {
+        font-family: 'Roboto', Arial, sans-serif;
+        line-height: 1.6;
+        color: var(--text-color);
+        margin: 0;
+        padding: 0;
+        background-color: var(--bg-color);
+        transition: all 0.3s ease;
+        background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 800 800"><g fill="none" stroke="%23404" stroke-width="1"><path d="M769 229L1037 260.9M927 880L731 737 520 660 309 538 40 599 295 764 126.5 879.5 40 599-197 493 102 382-31 229 126.5 79.5-69-63"/><path d="M-31 229L237 261 390 382 603 493 308.5 537.5 101.5 381.5M370 905L295 764"/><path d="M520 660L578 842 731 737 840 599 603 493 520 660 295 764 309 538 390 382 539 269 769 229 577.5 41.5 370 105 295 -36 126.5 79.5 237 261 102 382 40 599 -69 737 127 880"/><path d="M520-140L578.5 42.5 731-63M603 493L539 269 237 261 370 105M902 382L539 269M390 382L102 382"/><path d="M-222 42L126.5 79.5 370 105 539 269 577.5 41.5 927 80 769 229 902 382 603 493 731 737M295-36L577.5 41.5M578 842L295 764M40-201L127 80M102 382L-261 269"/></g><g fill="%23505"><circle cx="769" cy="229" r="5"/><circle cx="539" cy="269" r="5"/><circle cx="603" cy="493" r="5"/><circle cx="731" cy="737" r="5"/><circle cx="520" cy="660" r="5"/><circle cx="309" cy="538" r="5"/><circle cx="295" cy="764" r="5"/><circle cx="40" cy="599" r="5"/><circle cx="102" cy="382" r="5"/><circle cx="127" cy="80" r="5"/><circle cx="370" cy="105" r="5"/><circle cx="578" cy="42" r="5"/><circle cx="237" cy="261" r="5"/><circle cx="390" cy="382" r="5"/></g></svg>');
+        background-attachment: fixed;
+        background-size: cover;
+    }
+
+    #app {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
+    .container {
+        display: flex;
+        flex: 1;
+    }
+
+    .sidebar {
+        width: 250px;
+        background-color: var(--sidebar-bg);
+        color: var(--sidebar-text);
+        padding: 20px;
+        height: 100vh;
+        position: fixed;
+        left: -250px;
+        top: 0;
+        overflow-y: auto;
+        box-shadow: var(--card-shadow);
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+        z-index: 1000;
+    }
+
+    .sidebar.open {
+        left: 0;
+    }
+
+    .sidebar-toggle {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 1001;
+        background-color: var(--header-bg);
+        color: var(--header-text);
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+    }
+
+    .sidebar-toggle:hover {
+        background-color: var(--highlight-color);
+        color: var(--header-bg);
+    }
+
+    .profile-image {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin: 0 auto 20px;
+        display: block;
+        border: 3px solid var(--highlight-color);
+        transition: all 0.3s ease;
+        box-shadow: 0 0 20px rgba(77, 168, 218, 0.5);
+    }
+
+    .profile-image:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0 30px rgba(77, 168, 218, 0.8);
+    }
+
+    .menu {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .menu li {
+        margin-bottom: 15px;
+    }
+
+    .menu a {
+        color: var(--sidebar-text);
+        text-decoration: none;
+        font-size: 1.1em;
+        transition: all 0.3s ease;
+        display: block;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .menu a:hover, .menu a.active {
+        color: var(--highlight-color);
+        background-color: rgba(77, 168, 218, 0.1);
+        transform: translateX(5px);
+        box-shadow: 0 0 10px rgba(77, 168, 218, 0.3);
+    }
+
+    .content {
+        flex: 1;
+        padding: 20px;
+        margin-left: 0;
+        transition: all 0.3s ease;
+        max-width: 800px;
+        margin: 0 auto;
+        padding-left: 270px; /* Add left padding to prevent content from jumping */
+    }
+
+    .content.sidebar-closed {
+        padding-left: 20px;
+    }
+
+    header {
+        background-color: var(--header-bg);
+        color: var(--header-text);
+        text-align: center;
+        padding: 2rem;
+        border-radius: 10px;
+        margin-bottom: 30px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        box-shadow: var(--card-shadow);
+        backdrop-filter: blur(10px);
+    }
+
+    header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(45deg, transparent, rgba(77, 168, 218, 0.1), transparent);
+        transform: rotate(45deg);
+        animation: shine 3s infinite;
+    }
+
+    @keyframes shine {
+        0% { transform: translateX(-50%) rotate(45deg); }
+        100% { transform: translateX(150%) rotate(45deg); }
+    }
+
+    h1, h2, h3 {
+        color: var(--highlight-color);
+    }
+
+    .name {
+        font-size: 3em;
+        margin-bottom: 0.5rem;
+        animation: fadeInDown 1s ease-out, glow 2s ease-in-out infinite alternate;
+    }
+
+    .job-title {
+        font-size: 2.2em;
+        font-weight: bold;
+        margin-top: 0.5rem;
+        color: var(--highlight-color);
+        animation: fadeInUp 1s ease-out, pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes fadeInDown {
+        0% {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeInUp {
+        0% {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes glow {
+        0% {
+            text-shadow: 0 0 5px var(--highlight-color);
+        }
+        100% {
+            text-shadow: 0 0 20px var(--highlight-color), 0 0 30px var(--highlight-color);
+        }
+    }
+
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.05);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    section {
+        background-color: var(--section-bg);
+        margin: 30px 0;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: var(--card-shadow);
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+
+    section:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0 30px rgba(77, 168, 218, 0.5);
+    }
+
+    .skills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .skill {
+        background-color: var(--skill-bg);
+        color: var(--skill-text);
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        box-shadow: 0 0 10px rgba(77, 168, 218, 0.3);
+        display: flex;
+        align-items: center;
+    }
+
+    .skill:hover {
+        transform: scale(1.1) rotate(5deg);
+        box-shadow: 0 0 20px rgba(77, 168, 218, 0.5);
+    }
+
+    .skill i {
+        margin-right: 5px;
+    }
+
+    .mode-toggle {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+    }
+
+    .mode-toggle button {
+        background-color: var(--header-bg);
+        color: var(--header-text);
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 10px rgba(77, 168, 218, 0.3);
+    }
+
+    .mode-toggle button:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0 20px rgba(77, 168, 218, 0.5);
+    }
+
+    footer {
+        background-color: var(--header-bg);
+        color: var(--header-text);
+        text-align: center;
+        padding: 1rem;
+        margin-top: auto;
+        border-radius: 10px 10px 0 0;
+        box-shadow: 0 -5px 20px rgba(77, 168, 218, 0.3);
+    }
+
+    .contact-info {
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        gap: 10px;
+        font-size: 1.1em;
+        font-weight: bold;
+    }
+
+    .contact-info p {
+        margin: 5px 0;
+        padding: 10px;
+        background-color: var(--skill-bg);
+        border-radius: 5px;
+        transition: all 0.3s ease;
+    }
+
+    .contact-info p:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 15px rgba(77, 168, 218, 0.5);
+    }
+
+    .contact-info i {
+        margin-right: 5px;
+        color: var(--highlight-color);
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            flex-direction: column;
+        }
+        .sidebar {
+            width: 100%;
+            height: auto;
+            position: fixed;
+            left: -100%;
+        }
+        .sidebar.open {
+            left: 0;
+        }
+        .content {
+            margin-left: 0;
+            padding: 10px;
+        }
+        .content.sidebar-open {
+            margin-left: 0;
+        }
+        .contact-info {
+            flex-direction: column;
+        }
+    }
+</style>
+</head>
+<body>
+<div id="app">
+    <button class="sidebar-toggle" @click="toggleSidebar">
+        <i :class="sidebarOpen ? 'fas fa-times' : 'fas fa-bars'"></i>
+    </button>
+
+    <div class="mode-toggle">
+        <button @click="toggleMode">
+            <i :class="darkMode ? 'fas fa-sun' : 'fas fa-moon'"></i>
+        </button>
+    </div>
+
+    <div class="container">
+        <div class="sidebar" :class="{ open: sidebarOpen }">
+            <img src="images/profil.png" alt="Photo de profil d'Andrew PARKER" class="profile-image">
+            <nav>
+                <ul class="menu">
+                    <li v-for="section in sections" :key="section.id">
+                        <a @click="setCurrentSection(section.id)" :class="{ active: currentSection === section.id }">{{ section.name }}</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <div class="content" :class="{ 'sidebar-closed': !sidebarOpen }">
+            <header>
+                <h1 class="name">{{ name }}</h1>
+                <p class="job-title">{{ jobTitle }}</p>
+            </header>
+
+            <component :is="currentSection"></component>
+
+            <footer>
+                <div class="contact-info">
+                    <p><i class="fas fa-envelope"></i> {{ email }}</p>
+                    <p><i class="fas fa-phone"></i> {{ phone }}</p>
+                    <p><i class="fas fa-map-marker-alt"></i> {{ address }}</p>
+                </div>
+            </footer>
+        </div>
+    </div>
+</div>
+
+<script>
+Vue.component('about', {
+    template: `
+        <section>
+            <h2>À propos</h2>
+            <p>Après 18 ans d'expérience en tant que carreleur indépendant, je suis actuellement en transition vers une carrière passionnante dans le développement web. Mon parcours unique m'a doté d'une solide éthique de travail, d'une grande attention aux détails et d'excellentes compétences en résolution de problèmes. Je suis déterminé à apporter ces qualités, ainsi que mon enthousiasme pour la technologie, au monde du développement web.</p>
+            <p>Je me spécialise dans le développement full stack, avec une expertise croissante en :</p>
+            <ul>
+                <li><i class="fab fa-html5"></i> HTML5 pour une structure web solide et sémantique</li>
+                <li><i class="fab fa-css3-alt"></i> CSS3 pour des designs modernes et responsives</li>
+                <li><i class="fab fa-js"></i> JavaScript pour une interactivité dynamique</li>
+                <li><i class="fab fa-vuejs"></i> Vue.js pour des applications web réactives et performantes</li>
+                <li><i class="fab fa-bootstrap"></i> Bootstrap pour un développement rapide et efficace</li>
+                <li><i class="fab fa-figma"></i> Figma pour le maquettage et le prototypage de designs web attrayants</li>
+                <li><i class="fab fa-node-js"></i> Node.js pour le développement côté serveur</li>
+                <li><i class="fas fa-database"></i> MongoDB pour la gestion de bases de données</li>
+            </ul>
+            <p>Je suis passionné par la création d'expériences web intuitives et esthétiques, et je suis constamment en train d'apprendre et d'améliorer mes compétences pour rester à la pointe de l'industrie du développement web.</p>
+        </section>
+    `
+});
+
+Vue.component('experience', {
+    template: `
+        <section>
+            <h2>Expériences professionnelles</h2>
+            <h3>Développeur Web Full Stack (en formation)</h3>
+            <p>Depuis 2023</p>
+            <ul>
+                <li><i class="fas fa-laptop-code"></i> Développement de sites web responsive avec HTML5, CSS3 et JavaScript</li>
+                <li><i class="fab fa-vuejs"></i> Création d'applications web interactives avec Vue.js</li>
+                <li><i class="fab fa-bootstrap"></i> Utilisation de Bootstrap pour des designs modernes et adaptables</li>
+                <li><i class="fab fa-figma"></i> Maquettage de pages web avec Figma</li>
+                <li><i class="fas fa-code-branch"></i> Utilisation de Git pour le contrôle de version</li>
+                <li><i class="fas fa-mobile-alt"></i> Optimisation pour les appareils mobiles et les tablettes</li>
+                <li><i class="fab fa-node-js"></i> Développement back-end avec Node.js et Express</li>
+                <li><i class="fas fa-database"></i> Conception et gestion de bases de données MongoDB</li>
+            </ul>
+
+            <h3>Artisan indépendant - Carreleur</h3>
+            <p>De 2005 à 2022, Andrew Parker Carrelage, Centre Bretagne</p>
+            <ul>
+                <li><i class="fas fa-tasks"></i> Gestion de projets de carrelage pour divers clients</li>
+                <li><i class="fas fa-users"></i> Coordination avec d'autres corps de métier sur les chantiers</li>
+                <li><i class="fas fa-calculator"></i> Gestion administrative et financière de l'entreprise</li>
+            </ul>
+        </section>
+    `
+});
+
+Vue.component('education', {
+    template: `
+        <section>
+            <h2>Formation</h2>
+            <h3>Titre Professionnel Développeur Web et Web Mobile</h3>
+            <p>En cours - AFPA</p>
+            <ul>
+                <li><i class="fab fa-html5"></i> HTML5, <i class="fab fa-css3-alt"></i> CSS3, <i class="fab fa-js"></i> JavaScript</li>
+                <li><i class="fab fa-vuejs"></i> Vue.js, <i class="fab fa-bootstrap"></i> Bootstrap</li>
+                <li><i class="fas fa-mobile-alt"></i> Conception responsive et mobile-first</li>
+                <li><i class="fab fa-figma"></i> Maquettage et prototypage avec Figma</li>
+                <li><i class="fas fa-database"></i> Bases de données et back-end (Node.js, Express, MongoDB)</li>
+            </ul>
+
+            <h3>Diplôme de Compétence en Langue - Français Langue Étrangère</h3>
+            <p>Mars 2023, Rennes</p>
+
+            <h3>NVQ Niveau 3 Carrelage et Faïence (diplôme anglais - équivalent BTS)</h3>
+            <p>Septembre 2004 à septembre 2005, CTA Derby, Angleterre</p>
+        </section>
+    `
+});
+
+Vue.component('skills', {
+    template: `
+        <section>
+            <h2>Compétences</h2>
+            <div class="skills">
+                <span class="skill" v-for="skill in skills" :key="skill.name">
+                    <i :class="skill.icon"></i>
+                    {{ skill.name }}
+                </span>
+            </div>
+        </section>
+    `,
+    data() {
+        return {
+            skills: [
+                { name: 'HTML5', icon: 'fab fa-html5' },
+                { name: 'CSS3', icon: 'fab fa-css3-alt' },
+                { name: 'JavaScript', icon: 'fab fa-js' },
+                { name: 'Vue.js', icon: 'fab fa-vuejs' },
+                { name: 'Bootstrap', icon: 'fab fa-bootstrap' },
+                { name: 'Figma', icon: 'fab fa-figma' },
+                { name: 'Responsive Design', icon: 'fas fa-mobile-alt' },
+                { name: 'Git', icon: 'fab fa-git-alt' },
+                { name: 'Node.js', icon: 'fab fa-node-js' },
+                { name: 'MongoDB', icon: 'fas fa-database' },
+                { name: 'Anglais (Langue maternelle)', icon: 'fas fa-language' },
+                { name: 'Français (C1)', icon: 'fas fa-language' }
+            ]
+        }
+    }
+});
+
+Vue.component('projects', {
+    template: `
+        <section>
+            <h2>Projets</h2>
+            <div class="project-card" v-for="project in projects" :key="project.name">
+                <h3>{{ project.name }}</h3>
+                <img :src="project.image" :alt="project.name">
+                <p>{{ project.description }}</p>
+                <div class="skills">
+                    <span class="skill" v-for="tech in project.technologies" :key="tech">{{ tech }}</span>
+                </div>
+            </div>
+        </section>
+    `,
+    data() {
+        return {
+            projects: [
+                {
+                    name: "Portfolio Personnel",
+                    image: "https://via.placeholder.com/300x200?text=Portfolio+Preview",
+                    description: "Un site web responsive présentant mes compétences et projets en développement web. Conçu avec une approche mobile-first et des animations fluides pour une expérience utilisateur optimale.",
+                    technologies: ["HTML5", "CSS3", "Vue.js", "Bootstrap"]
+                },
+                {
+                    name: "Application de Gestion de Tâches",
+                    image: "https://via.placeholder.com/300x200?text=Task+App+Preview",
+                    description: "Une application web permettant aux utilisateurs de créer, organiser et suivre leurs tâches quotidiennes. Utilise Vue.js pour une interface réactive et LocalStorage pour la persistance des données.",
+                    technologies: ["Vue.js", "Vuex", "CSS Grid", "LocalStorage API"]
+                },
+                {
+                    name: "API RESTful pour un Blog",
+                    image: "https://via.placeholder.com/300x200?text=Blog+API+Preview",
+                    description: "Une API RESTful pour gérer un blog, avec authentification JWT, CRUD pour les articles et les commentaires. Utilise Node.js, Express et MongoDB.",
+                    technologies: ["Node.js", "Express", "MongoDB", "JWT"]
+                }
+            ]
+        }
+    }
+});
+
+new Vue({
+    el: '#app',
+    data: {
+        name: 'Andrew PARKER',
+        jobTitle: 'Junior Développeur Web - Full Stack',
+        email: 'andrew.parker22@outlook.com',
+        phone: '06 42 55 72 74',
+        address: 'Maël Carhaix, 22340, Bretagne',
+        darkMode: true,
+        currentSection: 'about',
+        sidebarOpen: false,
+        sections: [
+            { id: 'about', name: 'À propos' },
+            { id: 'experience', name: 'Expérience' },
+            { id: 'education', name: 'Formation' },
+            { id: 'skills', name: 'Compétences' },
+            { id: 'projects', name: 'Projets' }
+        ]
+    },
+    methods: {
+        toggleMode() {
+            this.darkMode = !this.darkMode;
+            document.body.classList.toggle('light-mode');
+        },
+        toggleSidebar() {
+            this.sidebarOpen = !this.sidebarOpen;
+        },
+        setCurrentSection(sectionId) {
+            this.currentSection = sectionId;
+            if (window.innerWidth <= 768) {
+                this.sidebarOpen = false;
+            }
+        }
+    }
+});
+</script>
+</body>
+</html>
